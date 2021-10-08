@@ -1,0 +1,65 @@
+@import 'App';
+
+.home-title {
+    color: white;
+}
+
+.home-main-container {
+    .ant-row {
+        padding: 2vh 3vw;
+    }
+}
+
+.title-row {
+    height: 7vh;
+}
+
+.playlists-row {
+    height: 10vh;
+    .ant-card {
+        height: 8vh;
+        width: 13vw;
+        margin-right: 2vw;
+        background-color: #00264a;
+        border-color: #000c17;
+        border-radius: 1vh;
+        .ant-card-body {
+            padding: 2.3vh 2vw;
+            h3 {
+                color: white;
+            }
+        }
+    }
+}
+
+.recent-tracks {
+    margin-top: 2vh;
+    height: 30vh;
+    display: flex;
+    .cards {
+        display: flex;
+        flex-direction: row;
+        .ant-card {
+            height: 25vh;
+            width: 13vw;
+            background-color: #00264a;
+            border-color: #000c17;
+            margin-right: 3vw;
+            .ant-card-body {
+                .track-album {
+                    height: 13vh;
+                    width: 9.5vw;
+                    background-color: aqua;
+                    margin-bottom: 1vh;
+                }
+                h3 {
+                    margin: 0;
+                    color: white;
+                }
+                h5 {
+                    color: white;
+                }
+            }
+        }
+    }
+}
