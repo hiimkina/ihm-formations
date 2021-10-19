@@ -11,6 +11,12 @@ const { Content, Footer } = Layout;
 
 interface AppState {
     selectedMenu: string;
+    currentlyPlaying: {
+        name: string,
+        artists: string,
+        albumId: number
+    };
+    isPlaying: boolean
 }
 
 export default class App extends Component<any, AppState> {
@@ -18,7 +24,21 @@ export default class App extends Component<any, AppState> {
         super(props);
         this.state = {
             selectedMenu: 'home',
+            currentlyPlaying: {
+                name: '',
+                artists: '',
+                albumId: 0,
+            },
+            isPlaying: false,
         };
+    }
+
+    updateCurrentlyPlaying = (name: string, artists: string, albumId: number) => {
+        this.setState({ currentlyPlaying: { name, artists, albumId } });
+    }
+
+    updateIsPlaying = (isPlaying: boolean) => {
+        this.setState({ isPlaying });
     }
 
     updateMenuSelection = (selectedMenu: string) => {
@@ -26,20 +46,21 @@ export default class App extends Component<any, AppState> {
     }
 
     renderContent = (): React.ReactNode => {
-        const { selectedMenu } = this.state;
+        const { currentlyPlaying, selectedMenu } = this.state;
         switch (selectedMenu) {
             case 'home':
-                return <Home />;
+                return <Home currentlyPlaying={currentlyPlaying} updateCurrentlyPlaying={this.updateCurrentlyPlaying} />;
             case 'search':
                 return <p>Search</p>;
             case 'library':
                 return <p>Your library</p>;
             default:
-                return <Home />;
+                return <Home currentlyPlaying={currentlyPlaying} updateCurrentlyPlaying={this.updateCurrentlyPlaying} />;
         }
     }
 
     render(): React.ReactNode {
+        const { currentlyPlaying, isPlaying } = this.state;
         return (
             <Layout className={'music-main-layout'}>
                 <Content className={'music-main-content'}>
@@ -51,7 +72,7 @@ export default class App extends Component<any, AppState> {
                     </div>
                 </Content>
                 <Footer className={'music-main-playbar'}>
-                    <Playbar />
+                    <Playbar isPlaying={isPlaying} currentlyPlaying={currentlyPlaying} updateIsPlaying={this.updateIsPlaying} />
                 </Footer>
             </Layout>
         );

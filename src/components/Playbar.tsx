@@ -10,42 +10,68 @@ import {
 } from '@ant-design/icons/lib';
 import ReactAudioPlayer from 'react-audio-player';
 
-interface PlaybarState {
+const CONFIG = require('../config/config.json');
+
+interface PlaybarProps {
+    currentlyPlaying: {
+        name: string,
+        artists: string,
+        albumId: number
+    };
     isPlaying: boolean;
+    updateIsPlaying: any;
 }
 
-export default class Playbar extends Component<any, PlaybarState> {
+export default class Playbar extends Component<PlaybarProps> {
     music: ReactAudioPlayer|null;
 
     constructor(props: any) {
         super(props);
         this.music = null;
-        this.state = {
-            isPlaying: false,
-        };
+    }
+
+    componentDidUpdate(prevProps: Readonly<PlaybarProps>): void {
+        const { currentlyPlaying, updateIsPlaying } = this.props;
+        if (prevProps.currentlyPlaying !== currentlyPlaying) {
+            updateIsPlaying(true);
+            this.render();
+            this.play();
+        }
+    }
+
+    getSongUrl = ():string => {
+        const { currentlyPlaying } = this.props;
+        return `${CONFIG.apiUrl}track?name=${currentlyPlaying.name}&albumId=${currentlyPlaying.albumId}`;
     }
 
     pause = () => {
+        const { updateIsPlaying } = this.props;
         this.music?.audioEl.current?.pause();
-        this.setState({ isPlaying: false });
+        updateIsPlaying(false);
     }
 
     play = () => {
+        const { updateIsPlaying } = this.props;
         this.music?.audioEl.current?.play();
-        this.setState({ isPlaying: true });
+        updateIsPlaying(true);
+    }
+
+    renderCentralButton = ():React.ReactNode => {
+        const { isPlaying } = this.props;
+        return isPlaying ? <PauseOutlined /> : <CaretRightFilled />;
     }
 
     render = (): React.ReactNode => {
-        const { isPlaying } = this.state;
-        console.log(this.music);
+        const { isPlaying } = this.props;
+        const { currentlyPlaying } = this.props;
         return (
             <div className={'playbar-container'}>
-                <ReactAudioPlayer src={'http://localhost:8000/api/v1/track'} ref={(element) => { this.music = element; }} />
+                <ReactAudioPlayer src={this.getSongUrl()} ref={(element) => { this.music = element; }} />
                 <div className={'currently-playing'}>
                     <div className={'current-album-cover'} />
                     <div className={'current-metadata'}>
-                        <h3 className={'track-title'}>Oui le titre</h3>
-                        <h5 className={'track-artist'}>Oui artiste</h5>
+                        <h3 className={'track-title'}>{ currentlyPlaying.name }</h3>
+                        <h5 className={'track-artist'}>{ currentlyPlaying.artists }</h5>
                     </div>
                 </div>
                 <div className={'track-controls'}>
@@ -55,7 +81,7 @@ export default class Playbar extends Component<any, PlaybarState> {
                         <Button
                             className={'play-row-play-pause'}
                             shape={'circle'}
-                            icon={isPlaying ? <PauseOutlined /> : <CaretRightFilled />}
+                            icon={this.renderCentralButton()}
                             onClick={() => {
                                 if (isPlaying) {
                                     this.pause();

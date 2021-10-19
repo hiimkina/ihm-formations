@@ -38,7 +38,9 @@ export default class MusicMenu extends Component<MusicMenuProps, MusicMenuState>
                 <Menu.Item key={'library'} icon={<UnorderedListOutlined />}>
                     Your library
                 </Menu.Item>
-                <Divider className={'divider'} />
+                <Menu.Item key={'divider'}>
+                    <Divider className={'divider'} />
+                </Menu.Item>
                 <Menu.Item key={'playlist-1'}>
                     Playlist 1
                 </Menu.Item>
